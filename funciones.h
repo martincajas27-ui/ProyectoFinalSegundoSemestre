@@ -129,6 +129,9 @@ int exportar_reporte_zona(DatosZona *zona, IndiceCalidad *indice,
 // Valida que una entrada de usuario sea numérica
 int validar_entrada_numerica(char *entrada, int min, int max);
 
+// Valida entrada de valores flotantes y rechaza letras y valores negativos donde no aplique
+float validar_entrada_float_simple(const char *buffer, float min);
+
 // Limpia el buffer de entrada
 void limpiar_buffer(void);
 

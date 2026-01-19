@@ -832,6 +832,58 @@ int validar_entrada_numerica(char *entrada, int min, int max)
     return valor;
 }
 
+float validar_entrada_float_simple(const char* buffer, float min)
+{
+    // Eliminar espacios y saltos de línea
+    char limpio[50];
+    int j = 0;
+    for (int i = 0; buffer[i] != '\0' && buffer[i] != '\n'; i++)
+    {
+        if (buffer[i] != ' ')
+        {
+            limpio[j++] = buffer[i];
+        }
+    }
+    limpio[j] = '\0';
+
+    // Si está vacío o es solo Enter, retornar 0
+    if (strlen(limpio) == 0)
+    {
+        return 0.0f;
+    }
+
+    // Verificar que solo contenga dígitos, punto decimal y opcionalmente signo negativo
+    int tiene_punto = 0;
+    for (int i = 0; limpio[i] != '\0'; i++)
+    {
+        if (i == 0 && limpio[i] == '-')
+        {
+            continue; // Permitir signo negativo al inicio
+        }
+        if (limpio[i] == '.' && !tiene_punto)
+        {
+            tiene_punto = 1;
+            continue;
+        }
+        if (limpio[i] < '0' || limpio[i] > '9')
+        {
+            printf("ERROR: Entrada debe ser numerica. Intente de nuevo.\n");
+            return -999999.0f; // Valor especial para indicar error
+        }
+    }
+
+    float valor = atof(limpio);
+
+    // Validar que no sea negativo si min es 0 o mayor
+    if (valor < min)
+    {
+        printf("ERROR: El valor no puede ser negativo. Intente de nuevo.\n");
+        return -999999.0f; // Valor especial para indicar error
+    }
+
+    return valor;
+}
+
 // ========== FUNCIONES DE INTERFAZ ==========
 
 int mostrar_menu_principal(void)
@@ -1236,126 +1288,87 @@ int ingresar_datos_dia(DatosZona *zonas, int cantidad_zonas)
     printf("Fecha y hora del registro: %s %s\n\n", nuevo_registro.fecha, nuevo_registro.hora);
 
     // Ingresar CO (Monóxido de Carbono)
-    printf("CO (Monoxido de Carbono) [mg/m3]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.CO = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.CO = 0.0f;
-    }
+    float valor_temp;
+    do {
+        printf("CO (Monoxido de Carbono) [mg/m3]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.CO = valor_temp;
 
     // Ingresar NO2 (Dióxido de Nitrógeno)
-    printf("NO2 (Dioxido de Nitrogeno) [ug/m3]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.NO2 = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.NO2 = 0.0f;
-    }
+    do {
+        printf("NO2 (Dioxido de Nitrogeno) [ug/m3]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.NO2 = valor_temp;
 
     // Ingresar O3 (Ozono)
-    printf("O3 (Ozono) [ug/m3]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.O3 = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.O3 = 0.0f;
-    }
+    do {
+        printf("O3 (Ozono) [ug/m3]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.O3 = valor_temp;
 
     // Ingresar PM2.5 (Material Particulado)
-    printf("PM2.5 (Material Particulado) [ug/m3]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.PM25 = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.PM25 = 0.0f;
-    }
+    do {
+        printf("PM2.5 (Material Particulado) [ug/m3]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.PM25 = valor_temp;
 
     // Ingresar SO2 (Dióxido de Azufre)
-    printf("SO2 (Dioxido de Azufre) [ug/m3]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.SO2 = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.SO2 = 0.0f;
-    }
+    do {
+        printf("SO2 (Dioxido de Azufre) [ug/m3]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.SO2 = valor_temp;
 
     printf("\n--- Datos Meteorologicos ---\n");
 
     // Ingresar Temperatura
-    printf("TMP (Temperatura) [C]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.TMP = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.TMP = 0.0f;
-    }
+    do {
+        printf("TMP (Temperatura) [C]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, -50.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.TMP = valor_temp;
 
     // Ingresar Humedad
-    printf("HUM (Humedad) [%%]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.HUM = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.HUM = 0.0f;
-    }
+    do {
+        printf("HUM (Humedad) [%%]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.HUM = valor_temp;
 
     // Ingresar Lluvia
-    printf("LLU (Lluvia) [mm]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.LLU = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.LLU = 0.0f;
-    }
+    do {
+        printf("LLU (Lluvia) [mm]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.LLU = valor_temp;
 
     // Ingresar Velocidad del viento
-    printf("VEL (Velocidad del viento) [m/s]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.VEL = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.VEL = 0.0f;
-    }
+    do {
+        printf("VEL (Velocidad del viento) [m/s]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.VEL = valor_temp;
 
     // Ingresar Dirección del viento
-    printf("DIR (Direccion del viento) [grados]: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (strlen(buffer) > 1)
-    {
-        nuevo_registro.DIR = atof(buffer);
-    }
-    else
-    {
-        nuevo_registro.DIR = 0.0f;
-    }
+    do {
+        printf("DIR (Direccion del viento) [grados]: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        valor_temp = validar_entrada_float_simple(buffer, 0.0f);
+    } while (valor_temp == -999999.0f);
+    nuevo_registro.DIR = valor_temp;
 
     // Agregar el nuevo registro a la zona
     zona->registros[zona->cantidad_registros] = nuevo_registro;
