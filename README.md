@@ -16,9 +16,6 @@ Para que el programa funcione correctamente, es necesario compilar todos los mó
 
 clona el repositorio:
 
-git clone https://github.com/tu-usuario/pollution-predictor.git
-cd pollution-predictor
-
 despues compila los archivos, con el siguiente comando:
 
 gcc main.c funciones.c prediccion.c -o pollution_app
